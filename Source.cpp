@@ -1,31 +1,69 @@
 #include "Header.h"
 
-#include <vector>
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	std::vector <double> x = {0,0,0};    //результаты
+	std::vector <double> x = { 0,0,0 };    //результаты
 	std::vector <double> grad;           //градиент функции
 	std::vector <double> naprl;          //направление
-	int i, n = 3;
-	double number, e;
-	double Y = 10000;             //лямбда
+	int n = 3;
+	double number, e = 0.0001;
+	double Y = 10000;             //минимальное значение
 	double** H = new double* [n]; //матрица Гессе
 	double** I = new double* [n]; //единичная матрица
 	bool flag = true;
 	int iter = 50;       //допустимое количество итераций
-	int currenttime = 0; //текущее количество
+	int currentIter = 0; //текущее количество
 
-	for (i = 0; i < n; i++)
+	I = Set_E(I, n);
+	/*
+	fori
 	{
-		I[i] = new double[n];
-		for (int j = 0; j < n; j++)
+		forj
+		std::cout << I[i][j] << "\t";
+		std::cout << std::endl;
+	}
+	*/
+
+		
+
+	while (currentIter < iter && Norm(grad) > e && !flag)
+	{
+		grad = Gradient(x, n);
+		H = Hessian(x, n);
+		naprl = Sk(H, Y, I, grad, n);
+
+		std::cout << "Точка:";
+		fori
+			std::cout << x[i] << "\t";
+
+		std::cout << "\nНаправление: ";
+		fori
+			std::cout << naprl[i] << "\t";
+
+		std::cout << std::endl;
+
+		double temp = funck(x);
+		fori
+			x[i] += naprl[i];
+
+		if (funck(x) < temp)
 		{
-			if (i == j)
-				I[i][i] = 1;
-			else
-				I[i][i] = 0;
+			flag = true;
+			Y /= 2;
+			currentIter++;
+		}
+		else
+		{
+			flag = false;
+			Y *= 2;
 		}
 	}
-		return 0;
+
+	std::cout << "Точка:";
+	fori
+		std::cout << x[i] << "\t";
+	std::cout << std::endl;
+	std::cout << "Количество итераций: " << currentIter << std::endl;
+	return 0;
 }
