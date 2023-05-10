@@ -137,23 +137,22 @@ std::vector <double> Direction(double** Hess, double Y, std::vector <double> gra
 
 	fori
 		forj
-		if (i == j)
-			E[i][j] *= Y;
+			E[i][j] *= Y;                     //умножаем единичную матрицу на лямду
 	
 	fori
 		forj
-			Hess[i][j] += E[i][j];
+			Hess[i][j] += E[i][j];            //складывам гессиам и единичную матрицу
 
-	invMatrix = Inversion(Hess, n);
+	invMatrix = Inversion(Hess, n);           //находим обратную
 
 	fori
 		forj
-		invMatrix[i][j] *= -1;
+		invMatrix[i][j] *= -1;                //умножаем её на -1
 
 	fori
 	{
 		forj
-			sum += invMatrix[i][j] * grad[j];
+			sum += invMatrix[i][j] * grad[j]; //умножаем её на градиент
 
 		s[i] = sum;
 		sum = 0;
@@ -164,6 +163,7 @@ std::vector <double> Direction(double** Hess, double Y, std::vector <double> gra
 
 void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, int n)
 {
+	std::cout.precision(4);
 	std::cout << "Точка: ";
 	fori
 		std::cout << x[i] << "\t";
@@ -178,4 +178,17 @@ void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, in
 	std::cout << temp;
 	std::cout << std::endl;
 	std::cout << std::endl;
+}
+
+void Finished_log_out(std::vector <double> x, int CurrentIter, double temp, int n)
+{
+	std::cout.precision(4);
+	std::cout << "\n\t///Ответ///\nТочка:";
+	fori
+		std::cout << x[i] << " ";
+	std::cout << std::endl;
+	std::cout << "Значение: ";
+	std::cout << temp;
+	std::cout << std::endl;
+	std::cout << "Количество итераций: " << CurrentIter << std::endl;
 }

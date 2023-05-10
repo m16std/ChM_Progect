@@ -3,39 +3,31 @@
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	std::cout.precision(4);
-	std::vector <double> x = { 20,30,40 };   //результаты
-	std::vector <double> grad;              //градиент функции
-	std::vector <double> napr;             //направление
-	int n = 3;
-	double e = 0.001;               //точность
-	double Y = 10000;              //минимальное значение
-	double** H = new double* [n]; //матрица Гессе
-	double temp;
-	int MaxIter = 200;       //допустимое количество итераций
-	int CurrentIter = 0;    //текущее количество
+	std::vector <double> x = { 1,1,1 };    //Начальная точка (сюда же будет записана точка минимума)
+	std::vector <double> grad;            //Градиент функции
+	std::vector <double> napr;           //Направление
+	int n = 3;                            //Количество переменных в функции
+	double e = 0.0001;                   //Точность
+	double Y = 10000;                   //Лямда (просто большое число для сходимости алгоритма)
+	double** H = new double* [n];         //Матрица Гессе
+	double temp;                         //Тут храним значение функции для сравнения значений до и после сдвига
+	int MaxIter = 200;                  //Допустимое количество итераций
+	int CurrentIter = 0;               //Текущее количество
 
 	while (1)
 	{
-		grad = Gradient(x, n);
-		H = Hessian(x, n);
-		napr = Direction(H, Y, grad, n);        // градиент и Гесссиан можно было получать прямо в этой скобке без доп. переменных
-		temp = funck(x);                       // фиксируем значение функции до сдвига
-		Log_out(x, napr, temp, n);            // отправка инфы в консоль
-		fori x[i] += napr[i];                // сдвигаем x 
-		funck(x) < temp ? Y /= 2: Y *= 2;   // если значение уменьшилось, то уменьшаем лямду, иначе увеличиваем
+		grad = Gradient(x, n);                    // Вычисление Градиента
+		H = Hessian(x, n);                       // Вычисление Гесссиана
+		napr = Direction(H, Y, grad, n);        // Вычисление направления
+		temp = funck(x);                       // Фиксируем значение функции до сдвига
+		Log_out(x, napr, temp, n);            // Отправка инфы в консоль
+		fori x[i] += napr[i];                // Сдвигаем x 
+		funck(x) < temp ? Y /= 2 : Y *= 2;  // Если значение функции уменьшилось, то уменьшаем лямду, иначе увеличиваем
 		CurrentIter++;
-		if (CurrentIter > MaxIter || abs(Norm(grad)) < e)  // выхдим из цикла если слишком много итераций или сдвиг меньше чем точность
+		if (CurrentIter > MaxIter || abs(Norm(grad)) < e)  // Выходим из цикла если слишком много итераций или сдвиг меньше чем точность
 			break;
 	}
 
-	std::cout << "\nОтвет:\nТочка:";
-	fori
-		std::cout << x[i] << "\t";
-	std::cout << std::endl;
-	std::cout << "Значение: ";
-	std::cout << temp;
-	std::cout << std::endl;
-	std::cout << "Количество итераций: " << CurrentIter << std::endl;
+	Finished_log_out(x, CurrentIter, temp, n); // Отправка финишноц инфы в консоль (без направления)
 	return 0;
 }
