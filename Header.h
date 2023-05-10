@@ -1,38 +1,34 @@
 #pragma once
 #include <vector>
 #include <iostream>
-#include <math.h>
 #include <cmath>
 
 #define fori for (int i = 0; i < n; i++) //не бейте пж
 #define forj for (int j = 0; j < n; j++)
 #define fork for (int k = 0; k < n; k++)
 
-double funck(std::vector <double> x) //исследуемая функция
-{
-	return pow(x[0] + 2, 2) + pow(x[1] - 5, 2) + pow(x[2] + 10, 2);
-}
+double funck(std::vector <double> x);
 
 double Der(std::vector <double> x, int k) //вычисление производной
 {
 	double y1, y0;
-	x[k] += 0.000001;
+	x[k] += 0.0000001;
 	y1 = funck(x);
-	x[k] -= 0.000002;
+	x[k] -= 0.0000002;
 	y0 = funck(x);
-	x[k] += 0.000001;
-	return((y1 - y0) / 0.000002);
+	x[k] += 0.0000001;
+	return((y1 - y0) / 0.0000002);
 }
 
 double Sec_Der(std::vector <double> x, int k1, int k2) //вычисление второй производной
 {
 	double der1, der0;
-	x[k2] += 0.000001;
+	x[k2] += 0.0000001;
 	der1 = Der(x, k1);
-	x[k2] -= 0.000002;
+	x[k2] -= 0.0000002;
 	der0 = Der(x, k1);
-	x[k2] += 0.000001;
-	return((der1 - der0) / 0.000002);
+	x[k2] += 0.0000001;
+	return((der1 - der0) / 0.0000002);
 }
 
 std::vector <double> Gradient(std::vector <double> x, int n) //вычисление градиента
@@ -73,10 +69,7 @@ void Set_E(double** E, int n) //создание единичной матрицы
 
 	fori
 		forj
-		if (i == j)
-			E[i][j] = 1;
-		else
-			E[i][j] = 0;
+		i == j ? E[i][j] = 1: E[i][j] = 0;
 }
 
 double** Inversion(double** A, int n) //нахождение братной матрицы
@@ -161,17 +154,17 @@ std::vector <double> Direction(double** Hess, double Y, std::vector <double> gra
 	return s;
 }
 
-void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, int n)
+void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, int n, double e)
 {
-	std::cout.precision(4);
+	std::cout.precision(log10(1 / e) + 2);
 	std::cout << "Точка: ";
 	fori
-		std::cout << x[i] << "\t";
+		std::cout << ((int)(x[i] / e)) * e << "\t";
 	std::cout << std::endl;
 
 	std::cout << "Направление: ";
 	fori
-		std::cout << naprl[i] << "\t";
+		std::cout << ((int)(naprl[i] / e)) * e << "\t";
 	std::cout << std::endl;
 
 	std::cout << "Значение: ";
@@ -180,15 +173,14 @@ void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, in
 	std::cout << std::endl;
 }
 
-void Finished_log_out(std::vector <double> x, int CurrentIter, double temp, int n)
+void Finished_log_out(std::vector <double> x, int CurrentIter, double temp, int n, double e)
 {
-	std::cout.precision(4);
 	std::cout << "\n\t///Ответ///\nТочка:";
 	fori
-		std::cout << x[i] << " ";
+		std::cout << ((int)(x[i] / e)) * e << " ";
 	std::cout << std::endl;
 	std::cout << "Значение: ";
-	std::cout << temp;
+	std::cout << ((int)(temp / e)) * e;
 	std::cout << std::endl;
 	std::cout << "Количество итераций: " << CurrentIter << std::endl;
 }
