@@ -3,67 +3,39 @@
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	std::vector <double> x = { 0,0,0 };    //результаты
-	std::vector <double> grad;           //градиент функции
-	std::vector <double> naprl;          //направление
+	std::cout.precision(4);
+	std::vector <double> x = { 20,30,40 };   //результаты
+	std::vector <double> grad;              //градиент функции
+	std::vector <double> napr;             //направление
 	int n = 3;
-	double number, e = 0.0001;
-	double Y = 10000;             //минимальное значение
+	double e = 0.001;               //точность
+	double Y = 10000;              //минимальное значение
 	double** H = new double* [n]; //матрица Гессе
-	double** I = new double* [n]; //единичная матрица
-	bool flag = true;
-	int iter = 50;       //допустимое количество итераций
-	int currentIter = 0; //текущее количество
+	double temp;
+	int MaxIter = 200;       //допустимое количество итераций
+	int CurrentIter = 0;    //текущее количество
 
-	I = Set_E(I, n);
-	/*
-	fori
-	{
-		forj
-		std::cout << I[i][j] << "\t";
-		std::cout << std::endl;
-	}
-	*/
-
-		
-
-	while (currentIter < iter && Norm(grad) > e && !flag)
+	while (1)
 	{
 		grad = Gradient(x, n);
 		H = Hessian(x, n);
-		naprl = Sk(H, Y, I, grad, n);
-
-		std::cout << "Точка:";
-		fori
-			std::cout << x[i] << "\t";
-
-		std::cout << "\nНаправление: ";
-		fori
-			std::cout << naprl[i] << "\t";
-
-		std::cout << std::endl;
-
-		double temp = funck(x);
-		fori
-			x[i] += naprl[i];
-
-		if (funck(x) < temp)
-		{
-			flag = true;
-			Y /= 2;
-			currentIter++;
-		}
-		else
-		{
-			flag = false;
-			Y *= 2;
-		}
+		napr = Direction(H, Y, grad, n);        // градиент и Гесссиан можно было получать прямо в этой скобке без доп. переменных
+		temp = funck(x);                       // фиксируем значение функции до сдвига
+		Log_out(x, napr, temp, n);            // отправка инфы в консоль
+		fori x[i] += napr[i];                // сдвигаем x 
+		funck(x) < temp ? Y /= 2: Y *= 2;   // если значение уменьшилось, то уменьшаем лямду, иначе увеличиваем
+		CurrentIter++;
+		if (CurrentIter > MaxIter || abs(Norm(grad)) < e)  // выхдим из цикла если слишком много итераций или сдвиг меньше чем точность
+			break;
 	}
 
-	std::cout << "Точка:";
+	std::cout << "\nОтвет:\nТочка:";
 	fori
 		std::cout << x[i] << "\t";
 	std::cout << std::endl;
-	std::cout << "Количество итераций: " << currentIter << std::endl;
+	std::cout << "Значение: ";
+	std::cout << temp;
+	std::cout << std::endl;
+	std::cout << "Количество итераций: " << CurrentIter << std::endl;
 	return 0;
 }

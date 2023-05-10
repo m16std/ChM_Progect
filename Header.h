@@ -8,53 +8,56 @@
 #define forj for (int j = 0; j < n; j++)
 #define fork for (int k = 0; k < n; k++)
 
-double funck(std::vector <double> x)
+double funck(std::vector <double> x) //исследуема€ функци€
 {
-	return pow(x[0] - 5, 3) - pow(x[1] - 4, 3) - pow(x[2] - 3, 3);
+	return pow(x[0] + 2, 2) + pow(x[1] - 5, 2) + pow(x[2] + 10, 2);
 }
 
-double Der(std::vector <double> x, int k)
+double Der(std::vector <double> x, int k) //вычисление производной
 {
 	double y1, y0;
-	x[k] += 0.0000001;
+	x[k] += 0.000001;
 	y1 = funck(x);
-	x[k] -= 0.0000002;
+	x[k] -= 0.000002;
 	y0 = funck(x);
-	return((y1 - y0) / 0.0000001);
+	x[k] += 0.000001;
+	return((y1 - y0) / 0.000002);
 }
 
-double Sec_Der(std::vector <double> x, int k1, int k2)
+double Sec_Der(std::vector <double> x, int k1, int k2) //вычисление второй производной
 {
 	double der1, der0;
-	x[k2] += 0.0000001;
+	x[k2] += 0.000001;
 	der1 = Der(x, k1);
-	x[k2] -= 0.0000002;
+	x[k2] -= 0.000002;
 	der0 = Der(x, k1);
-	return((der1 - der0) / 0.0000001);
+	x[k2] += 0.000001;
+	return((der1 - der0) / 0.000002);
 }
 
-std::vector <double> Gradient(std::vector <double> x, int n)
+std::vector <double> Gradient(std::vector <double> x, int n) //вычисление градиента
 {
 	std::vector <double> grad;
 
-	fori Der(x, i);
+	fori grad.push_back(Der(x, i));
 
 	return grad;
 }
 
-double Norm(std::vector<double> grad)
+double Norm(std::vector<double> grad) //вычисление длины вектора (градиента)
 {
 	double sum = 0;
 	int n = grad.size();
 
-	fori sum += grad[i] * grad[i];
+	fori sum += pow(grad[i],2);
 
 	return sqrt(sum);
 }
 
-double** Hessian(std::vector <double> x, int n)
+double** Hessian(std::vector <double> x, int n) //вычисление матрицы вторых производных (√ессиана функции)
 {
 	double** Hess = new double* [n];
+	fori Hess[i] = new double[n];
 
 	fori
 		forj
@@ -63,43 +66,24 @@ double** Hessian(std::vector <double> x, int n)
 	return Hess;
 }
 
-double** Set_E(double** E, int n)
+void Set_E(double** E, int n) //создание единичной матрицы
 {
 	fori
-	{
 		E[i] = new double[n];
+
+	fori
 		forj
-		{
-			if (i == j)
-				E[i][j] = 1;
-			else
-				E[i][j] = 0;
-		}
-	}
-	return E;
+		if (i == j)
+			E[i][j] = 1;
+		else
+			E[i][j] = 0;
 }
 
-double** Inversion(double** A, int n)
+double** Inversion(double** A, int n) //нахождение братной матрицы
 {
 	double temp;
-
 	double** E = new double* [n];
-
-	fori
-	{
-			E[i] = new double[n];
-	}
-	
-
-	fori
-	{
-		forj
-		{
-			E[i][j] = 0.0;
-			if (i == j)
-				E[i][j] = 1.0;
-		}
-	}
+	Set_E(E, n);
 
 	fork
 	{
@@ -137,66 +121,61 @@ double** Inversion(double** A, int n)
 		}
 	}
 
-	return A;
+	return E;
 }
 
+
 //Ќахождение направлени€
-std::vector <double> Sk(double** Hess, double Y, double** I, std::vector <double> grad, int n)
+std::vector <double> Direction(double** Hess, double Y, std::vector <double> grad, int n)
 {
 	int i, j;
 	double** invMatrix; //обратна€ “ матрица
+	double** E = new double* [n]; //единична€ матрица
+	Set_E(E, n);
 	double sum = 0;
 	std::vector <double> s(n);//направление
+
+	fori
+		forj
+		if (i == j)
+			E[i][j] *= Y;
+	
+	fori
+		forj
+			Hess[i][j] += E[i][j];
+
+	invMatrix = Inversion(Hess, n);
+
+	fori
+		forj
+		invMatrix[i][j] *= -1;
+
 	fori
 	{
 		forj
-		{
-			if (i == j)
-			{
-				I[i][i] *= Y;
-			}
-		}
+			sum += invMatrix[i][j] * grad[j];
+
+		s[i] = sum;
+		sum = 0;
 	}
 
-		fori
-		{
-			forj
-			{
-				Hess[i][i] += I[i][i];
-
-				if (i == j)
-				{
-					I[i][i] = 1;
-				}
-				else
-				{
-					I[i][i] = 0;
-				}
-
-			}
-		}
-		invMatrix = Inversion(Hess, n);
-
-		fori
-		{
-			forj
-			{
-				invMatrix[i][j] *= -1;
-			}
-		}
-
-			fori
-			{
-				forj
-				{
-					sum += invMatrix[i][j] * grad[j];
-				}
-
-			s[i] = sum;
-			sum = 0;
-			}
-
-
-			return s;
+	return s;
 }
 
+void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, int n)
+{
+	std::cout << "“очка: ";
+	fori
+		std::cout << x[i] << "\t";
+	std::cout << std::endl;
+
+	std::cout << "Ќаправление: ";
+	fori
+		std::cout << naprl[i] << "\t";
+	std::cout << std::endl;
+
+	std::cout << "«начение: ";
+	std::cout << temp;
+	std::cout << std::endl;
+	std::cout << std::endl;
+}
