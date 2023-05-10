@@ -9,7 +9,8 @@
 
 double funck(std::vector <double> x);
 
-double Der(std::vector <double> x, int k) //вычисление производной
+//¬ычисление производной
+double Der(std::vector <double> x, int k)
 {
 	double y1, y0;
 	x[k] += 0.0000001;
@@ -20,7 +21,8 @@ double Der(std::vector <double> x, int k) //вычисление производной
 	return((y1 - y0) / 0.0000002);
 }
 
-double Sec_Der(std::vector <double> x, int k1, int k2) //вычисление второй производной
+//¬ычисление второй производной
+double Sec_Der(std::vector <double> x, int k1, int k2)
 {
 	double der1, der0;
 	x[k2] += 0.0000001;
@@ -31,7 +33,8 @@ double Sec_Der(std::vector <double> x, int k1, int k2) //вычисление второй произ
 	return((der1 - der0) / 0.0000002);
 }
 
-std::vector <double> Gradient(std::vector <double> x, int n) //вычисление градиента
+//¬ычисление градиента
+std::vector <double> Gradient(std::vector <double> x, int n)
 {
 	std::vector <double> grad;
 
@@ -40,7 +43,8 @@ std::vector <double> Gradient(std::vector <double> x, int n) //вычисление градие
 	return grad;
 }
 
-double Norm(std::vector<double> grad) //вычисление длины вектора (градиента)
+//¬ычисление длины вектора (градиента)
+double Norm(std::vector<double> grad)
 {
 	double sum = 0;
 	int n = grad.size();
@@ -50,7 +54,8 @@ double Norm(std::vector<double> grad) //вычисление длины вектора (градиента)
 	return sqrt(sum);
 }
 
-double** Hessian(std::vector <double> x, int n) //вычисление матрицы вторых производных (√ессиана функции)
+//¬ычисление матрицы вторых производных (√ессиана функции)
+double** Hessian(std::vector <double> x, int n) 
 {
 	double** Hess = new double* [n];
 	fori Hess[i] = new double[n];
@@ -62,7 +67,8 @@ double** Hessian(std::vector <double> x, int n) //вычисление матрицы вторых прои
 	return Hess;
 }
 
-void Set_E(double** E, int n) //создание единичной матрицы
+//—оздание единичной матрицы
+void Set_E(double** E, int n) 
 {
 	fori
 		E[i] = new double[n];
@@ -72,7 +78,8 @@ void Set_E(double** E, int n) //создание единичной матрицы
 		i == j ? E[i][j] = 1: E[i][j] = 0;
 }
 
-double** Inversion(double** A, int n) //нахождение братной матрицы
+//Ќахождение братной матрицы
+double** Inversion(double** A, int n) 
 {
 	double temp;
 	double** E = new double* [n];
@@ -117,7 +124,6 @@ double** Inversion(double** A, int n) //нахождение братной матрицы
 	return E;
 }
 
-
 //Ќахождение направлени€
 std::vector <double> Direction(double** Hess, double Y, std::vector <double> grad, int n)
 {
@@ -126,7 +132,7 @@ std::vector <double> Direction(double** Hess, double Y, std::vector <double> gra
 	double** E = new double* [n]; //единична€ матрица
 	Set_E(E, n);
 	double sum = 0;
-	std::vector <double> s(n);//направление
+	std::vector <double> trend(n);//направление
 
 	fori
 		forj
@@ -147,14 +153,15 @@ std::vector <double> Direction(double** Hess, double Y, std::vector <double> gra
 		forj
 			sum += invMatrix[i][j] * grad[j]; //умножаем еЄ на градиент
 
-		s[i] = sum;
+		trend[i] = sum;
 		sum = 0;
 	}
 
-	return s;
+	return trend;
 }
 
-void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, int n, double e)
+//¬ывод промежуточных точек
+void Log_out(std::vector <double> x, std::vector <double> trend, double temp, int n, double e)
 {
 	std::cout.precision(log10(1 / e) + 2);
 	std::cout << "“очка: ";
@@ -164,7 +171,7 @@ void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, in
 
 	std::cout << "Ќаправление: ";
 	fori
-		std::cout << ((int)(naprl[i] / e)) * e << "\t";
+		std::cout << ((int)(trend[i] / e)) * e << "\t";
 	std::cout << std::endl;
 
 	std::cout << "«начение: ";
@@ -173,6 +180,7 @@ void Log_out(std::vector <double> x, std::vector <double> naprl, double temp, in
 	std::cout << std::endl;
 }
 
+//¬ывод результата
 void Finished_log_out(std::vector <double> x, int CurrentIter, double temp, int n, double e)
 {
 	std::cout << "\n\t///ќтвет///\n“очка:";

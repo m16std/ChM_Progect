@@ -9,7 +9,7 @@ int main()
 {
 	setlocale(LC_ALL, "Russian");
 	std::vector <double> grad;            //Градиент функции
-	std::vector <double> napr;           //Направление
+	std::vector <double> trend;          //Направление
 	int n = 4;                            //Количество переменных в функции
 	double e = 0.0001;                   //Точность (лучше с запасом выставлять)
 	double Y = 10000;                   //Лямда (просто большое число для сходимости алгоритма)
@@ -22,12 +22,12 @@ int main()
 
 	while (1)
 	{
-		grad = Gradient(x, n);                    // Вычисление Градиента
-		H = Hessian(x, n);                       // Вычисление Гесссиана
-		napr = Direction(H, Y, grad, n);        // Вычисление направления
+		grad = Gradient(x, n);                     // Вычисление Градиента
+		H = Hessian(x, n);                        // Вычисление Гесссиана
+		trend = Direction(H, Y, grad, n);        // Вычисление направления
 		temp = funck(x);                          // Фиксируем значение функции до сдвига
-		Log_out(x, napr, temp, n, e);            // Отправляем инфу в консоль
-		fori x[i] += napr[i];                   // Сдвигаем x 
+		Log_out(x, trend, temp, n, e);           // Отправляем инфу в консоль
+		fori x[i] += trend[i];                  // Сдвигаем x 
 		funck(x) < temp ? Y /= 2 : Y *= 2;     // Если значение функции уменьшилось, то уменьшаем лямду, иначе увеличиваем
 		CurrentIter++;
 		if (CurrentIter > MaxIter || abs(Norm(grad)) < e)  // Выходим из цикла если слишком много итераций или сдвиг меньше чем точность
