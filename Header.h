@@ -136,7 +136,7 @@ std::vector <double> Direction(double** Hess, double Y, std::vector <double> gra
 
 	fori
 		forj
-			E[i][j] *= Y;                     //умножаем единичную матрицу на лямду
+			E[i][j] *= Y;                     //умножаем единичную матрицу на лямбду
 	
 	fori
 		forj
