@@ -1,8 +1,8 @@
 #include "Header.h"
 
-double funck(std::vector <double> x) //исследуемая функция
+double funck(std::vector <double> x) //Исследуемая функция
 {
-	return cos(x[0])*pow(x[1]-20,2);
+	return cos(x[0])*pow(x[1]-20,2)+ pow(x[3] - 20, 2);
 }
 
 int main()
@@ -10,7 +10,7 @@ int main()
 	setlocale(LC_ALL, "Russian");
 	std::vector <double> grad;            // Градиент функции
 	std::vector <double> trend;          // Направление
-	int n = 2;                            // Количество переменных в функции
+	int n = 3;                            // Количество переменных в функции
 	double e = 0.00001;                  // Точность (лучше с запасом выставлять)
 	double Y = 10000;                   // Лямбда (просто большое число для сходимости алгоритма)
 	double** H = new double* [n];         // Матрица Гессе
@@ -28,7 +28,7 @@ int main()
 		temp = funck(x);                          // Фиксируем значение функции до сдвига
 		Log_out(x, trend, temp, n, e);           // Отправляем инфу в консоль
 		fori x[i] += trend[i];                  // Сдвигаем x 
-		funck(x) < temp ? Y /= 2 : Y *= 2;     // Если значение функции уменьшилось, то уменьшаем лямду, иначе увеличиваем
+		funck(x) < temp ? Y /= 2 : Y *= 2;     // Если значение функции уменьшилось, то уменьшаем лябмду, иначе увеличиваем
 		CurrentIter++;
 		if (CurrentIter > MaxIter || abs(Norm(grad)) < e)  // Выходим из цикла если слишком много итераций или сдвиг меньше чем точность
 			break;

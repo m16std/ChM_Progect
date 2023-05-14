@@ -128,30 +128,30 @@ double** Inversion(double** A, int n)
 std::vector <double> Direction(double** Hess, double Y, std::vector <double> grad, int n)
 {
 	int i, j;
-	double** invMatrix; //обратная Т матрица
-	double** E = new double* [n]; //единичная матрица
+	double** invMatrix;           //Обратная Т матрица
+	double** E = new double* [n]; //Единичная матрица
 	Set_E(E, n);
 	double sum = 0;
-	std::vector <double> trend(n);//направление
+	std::vector <double> trend(n);//Направление
 
 	fori
 		forj
-			E[i][j] *= Y;                     //умножаем единичную матрицу на лямбду
+			E[i][j] *= Y;                     //Умножаем единичную матрицу на лямбду
 	
 	fori
 		forj
-			Hess[i][j] += E[i][j];            //складывам гессиам и единичную матрицу
+			Hess[i][j] += E[i][j];            //Складывам гессиам и единичную матрицу
 
-	invMatrix = Inversion(Hess, n);           //находим обратную
+	invMatrix = Inversion(Hess, n);           //Находим обратную
 
 	fori
 		forj
-		invMatrix[i][j] *= -1;                //умножаем её на -1
+		invMatrix[i][j] *= -1;                //Умножаем её на -1
 
 	fori
 	{
 		forj
-			sum += invMatrix[i][j] * grad[j]; //умножаем её на градиент
+			sum += invMatrix[i][j] * grad[j]; //Умножаем её на градиент
 
 		trend[i] = sum;
 		sum = 0;
